@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
+import { ref, watch, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter, onBeforeRouteLeave } from 'vue-router'
 import { useDocument } from '@/composables/useDocument'
 import { useTagsStore } from '@/stores/tags'
 import { getDocument, addDocumentTags, removeDocumentTags } from '@/api/documents'
-import type { Tag } from '@/types/tag'
 import { VMarkdownView as VueMarkdown } from 'vue3-markdown'
 import {
   Document as DocIcon,
@@ -12,6 +11,7 @@ import {
   Link as LinkIcon,
   Crop,
 } from '@element-plus/icons-vue'
+import TagSelector from '@/components/business/TagSelector.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -225,29 +225,6 @@ const iconComponents: Record<string, typeof DocIcon> = {
   picture: DocIcon,
 }
 
-// Tags autocomplete
-const tagInput = ref('')
-const tagSuggestions = computed(() => {
-  if (!tagInput.value) return tagsStore.tags.slice(0, 10).map(t => ({ value: t }))
-  const query = tagInput.value.toLowerCase()
-  return tagsStore.tags.filter(t => t.name.toLowerCase().includes(query)).slice(0, 10).map(t => ({ value: t }))
-})
-
-function addTag(tag: Tag) {
-  if (!selectedTagIds.value.includes(tag.id)) {
-    selectedTagIds.value.push(tag.id)
-  }
-  tagInput.value = ''
-}
-
-function removeTag(tagId: number) {
-  selectedTagIds.value = selectedTagIds.value.filter(id => id !== tagId)
-}
-
-function getTagName(tagId: number): string {
-  return tagsStore.tags.find(t => t.id === tagId)?.name || ''
-}
-
 // Navigation guard
 function confirmNavigation(path: string) {
   if (saveStatus.value === 'saving' || content.value !== currentDoc.value?.content || title.value !== currentDoc.value?.title) {
@@ -318,28 +295,9 @@ function goBack() {
     </div>
 
     <!-- Tag Input -->
-    <div class="px-4 py-2 border-b border-dark-border flex items-center gap-2 flex-wrap">
-      <span class="text-sm text-gray-500">标签:</span>
-      <el-tag
-        v-for="tagId in selectedTagIds"
-        :key="tagId"
-        closable
-        @close="removeTag(tagId)"
-        class="mr-1"
-      >
-        {{ getTagName(tagId) }}
-      </el-tag>
-      <el-autocomplete
-        v-model="tagInput"
-        :fetch-suggestions="(_query: string, cb: (opts: {value: Tag}[]) => void) => { cb(tagSuggestions) }"
-        placeholder="Add tag..."
-        clearable
-        value-key="name"
-        class="!w-40"
-        @select="(item: {value: Tag}) => addTag(item.value)"
-      >
-        <template #prefix><el-icon><Tickets /></el-icon></template>
-      </el-autocomplete>
+    <div class="px-4 py-2 border-b border-dark-border">
+      <span class="text-sm text-gray-500 mb-2 block">标签:</span>
+      <TagSelector v-model="selectedTagIds" />
     </div>
 
     <!-- Split Editor/Preview -->
