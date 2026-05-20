@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { updatePassword } from '@/api/profile'
 import { validator } from '@/utils/validator'
@@ -9,6 +9,18 @@ import type { FormInstance, FormRules } from 'element-plus'
 const authStore = useAuthStore()
 const formRef = ref<FormInstance>()
 const loading = ref(false)
+const profileLoading = ref(false)
+
+onMounted(async () => {
+  profileLoading.value = true
+  try {
+    await authStore.fetchProfile()
+  } catch (error) {
+    console.error('Failed to fetch profile:', error)
+  } finally {
+    profileLoading.value = false
+  }
+})
 
 const passwordForm = ref({
   oldPassword: '',

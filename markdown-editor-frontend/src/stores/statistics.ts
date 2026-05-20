@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { getMonthlyStats, getTagStats } from '@/api/statistics'
+import { getYearlyStats, getTagStats } from '@/api/statistics'
 import type { MonthlyStats, TagStats } from '@/api/statistics'
 
 export const useStatisticsStore = defineStore('statistics', () => {
@@ -13,7 +13,7 @@ export const useStatisticsStore = defineStore('statistics', () => {
   async function fetchMonthlyStats(year: number) {
     loading.value = true
     try {
-      const data = await getMonthlyStats(year)
+      const data = await getYearlyStats(year)
       monthlyData.value = data
       currentYear.value = year
     } finally {
