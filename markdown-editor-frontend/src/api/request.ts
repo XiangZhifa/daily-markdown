@@ -36,7 +36,7 @@ request.interceptors.response.use(
       if (status === 401) {
         localStorage.removeItem('token')
         ElMessage.error('Session expired, please login again')
-        router.push('/login')
+        router.push('/auth/login')
       } else if (status === 403) {
         ElMessage.error('Access denied')
       } else if (status === 500) {
