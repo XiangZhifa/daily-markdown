@@ -41,3 +41,6 @@ stdout.txt
 .pnpm/
 
 docs/TODO_PLANS.md
+
+# Database
+markdown-editor-backend/data/database.sqlite
