@@ -1,0 +1,33 @@
+/* Element Plus Dark Theme Overrides */
+:root {
+  --el-bg-color: #1A1A1A;
+  --el-bg-color-overlay: #2D2D2D;
+  --el-text-color-primary: #FFFFFF;
+  --el-text-color-regular: #E0E0E0;
+  --el-border-color: #3D3D3D;
+  --el-border-color-light: #4D4D4D;
+  --el-fill-color-blank: #2D2D2D;
+  --el-color-primary: #409EFF;
+}
+
+/* Force dark mode for Element Plus */
+html.dark {
+  --el-bg-color: #1A1A1A;
+  --el-bg-color-overlay: #2D2D2D;
+}
+
+/* Override Element Plus component styles */
+.el-button--primary {
+  --el-button-bg-color: #409EFF;
+  --el-button-border-color: #409EFF;
+}
+
+.el-input__wrapper {
+  background-color: #2D2D2D;
+}
+
+.el-table {
+  --el-table-bg-color: #1A1A1A;
+  --el-table-tr-bg-color: #2D2D2D;
+  --el-table-header-bg-color: #3D3D3D;
+}
