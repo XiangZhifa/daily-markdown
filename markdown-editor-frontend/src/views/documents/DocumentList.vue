@@ -3,6 +3,7 @@ import { ref, computed, watch, onMounted } from 'vue'
 import { useDocumentsStore } from '@/stores/documents'
 import { useRouter } from 'vue-router'
 import type { Tag } from '@/api/documents'
+import { Search, Loading } from '@element-plus/icons-vue'
 
 const documentsStore = useDocumentsStore()
 const router = useRouter()

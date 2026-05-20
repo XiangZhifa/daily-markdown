@@ -2,6 +2,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useTagsStore } from '@/stores/tags'
 import { ElMessage } from 'element-plus'
+import { Refresh, Loading } from '@element-plus/icons-vue'
 import type { Tag } from '@/api/tags'
 
 const tagsStore = useTagsStore()
