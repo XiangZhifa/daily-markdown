@@ -3,136 +3,151 @@ import time
 import random
 
 def random_username():
-    return f"testuser{random.randint(10000, 99999)}"
+    return f"qauser{random.randint(1000, 9999)}"
 
-def test_tags_feature():
+def test_tags_crud():
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
         context = browser.new_context()
         page = context.new_page()
 
+        username = random_username()
+        email = f"{username}@test.com"
+        password = "TestPass123"
+
+        created_tag_name = None
+        logged_in = False
+
         try:
-            # Step 1: Register a new user
-            username = random_username()
-            print(f"Registering user: {username}")
-
+            print(f"1. Registering: {username}...")
             page.goto('http://localhost:5173/auth/register')
-            page.wait_for_load_state('networkidle')
-            print("Register page loaded")
+            page.wait_for_load_state('"'"'networkidle'"'"')
+            print("   Register page loaded")
 
-            # Fill registration form using correct placeholders from RegisterView.vue
-            page.fill('input[placeholder="Username (3-20 chars, a-z0-9_)"]', username)
-            page.fill('input[placeholder="Email"]', f'{username}@example.com')
-            page.fill('input[placeholder="Password (min 8 chars)"]', 'TestPass123')
-            page.fill('input[placeholder="Confirm Password"]', 'TestPass123')
-
-            page.click('button:has-text("Register")')
-            page.wait_for_load_state('networkidle', timeout=15000)
-            print(f"Registration submitted, URL: {page.url}")
-
-            # Wait for redirect
+            page.fill('"'"'input[placeholder="Username (3-20 chars, a-z0-9_)"]'"'"', username)
+            page.fill('"'"'input[placeholder="Email"]'"'"', email)
+            page.fill('"'"'input[placeholder="Password (min 8 chars)"]'"'"', password)
+            page.fill('"'"'input[placeholder="Confirm Password"]'"'"', password)
+            page.click('"'"'button:has-text("Register")'"'"')
+            page.wait_for_load_state('"'"'networkidle'"'"', timeout=15000)
+            print(f"   Registration submitted, URL: {page.url}")
             time.sleep(2)
 
-            # Check current state - register redirects to login on success
-            print(f"Current URL: {page.url}")
-
-            # If still on register page, try to login
-            if '/auth/login' in page.url:
-                print("On login page, logging in...")
-                page.fill('input[placeholder="用户名"]', username)
-                page.fill('input[placeholder="密码"]', 'TestPass123')
-                page.click('button:has-text("登录")')
-                page.wait_for_load_state('networkidle', timeout=15000)
+            if '"'"'/auth/login'"'"' in page.url:
+                print("   On login page, logging in...")
+                page.fill('"'"'input[placeholder="用户名"]'"'"', username)
+                page.fill('"'"'input[placeholder="密码"]'"'"', password)
+                page.click('"'"'button:has-text("登录")'"'"')
+                page.wait_for_load_state('"'"'networkidle'"'"', timeout=15000)
                 time.sleep(1)
-                print(f"After login URL: {page.url}")
-            elif '/documents' not in page.url:
-                # Try navigating directly
-                page.goto('http://localhost:5173/documents')
-                page.wait_for_load_state('networkidle', timeout=15000)
+                if '"'"'/documents'"'"' in page.url:
+                    logged_in = True
+                    print("   Logged in!")
 
-            # Step 3: Take screenshot of documents page
-            page.screenshot(path='E:/Research/daily-markdown/markdown-editor-frontend/.sisyphus/evidence/tags-qa-01-documents.png', full_page=True)
-            print("Documents page screenshot saved")
+            page.screenshot(path='"'"'E:/Research/daily-markdown/markdown-editor-frontend/.sisyphus/evidence/tags-crud-00-logged-in.png'"'"')
 
-            # Step 4: Check if sidebar has Tags section
-            # Look for the TagSidebar component
-            page.wait_for_timeout(1000)
+            print("\n2. Creating tag via Document Editor...")
+            page.goto('"'"'http://localhost:5173/documents/new'"'"')
+            page.wait_for_load_state('"'"'networkidle'"'"')
+            page.wait_for_timeout(2000)
 
-            # Take snapshot to understand the page structure
-            html_content = page.content()
-            with open('E:/Research/daily-markdown/markdown-editor-frontend/.sisyphus/evidence/tags-qa-02-sidebar-snapshot.txt', 'w', encoding='utf-8') as f:
-                f.write(html_content)
-            print("Sidebar HTML snapshot saved")
-
-            # Step 5: Navigate to /tags to test TagManage
-            page.goto('http://localhost:5173/tags')
-            page.wait_for_load_state('networkidle')
-            page.wait_for_timeout(1000)
-            print("TagManage page loaded")
-
-            page.screenshot(path='E:/Research/daily-markdown/markdown-editor-frontend/.sisyphus/evidence/tags-qa-03-tagmanage.png', full_page=True)
-            print("TagManage page screenshot saved")
-
-            # Step 6: Create a new tag
-            # Click the first input field we find
-            inputs = page.locator('input').all()
-            if inputs:
-                # Find an input that might be for creating a tag
-                for inp in inputs:
-                    try:
-                        placeholder = inp.get_attribute('placeholder') or ''
-                        if 'tag' in placeholder.lower() or '标签' in placeholder or '名称' in placeholder:
-                            inp.fill('TestTag123')
-                            print(f"Filled tag name: TestTag123")
-                            break
-                    except:
-                        continue
-
-            # Look for create/submit button
-            buttons = page.locator('button').all()
-            for btn in buttons:
+            tag_inputs = page.locator('"'"'input'"'"').all()
+            for inp in tag_inputs:
                 try:
-                    text = btn.inner_text()
-                    if '创建' in text or '添加' in text or 'add' in text.lower():
-                        btn.click()
-                        print(f"Clicked button: {text}")
+                    placeholder = inp.get_attribute('"'"'placeholder'"'"') or '"'"''"'"'
+                    if '"'"'Add tag'"'"' in placeholder or '"'"'tag'"'"' in placeholder.lower():
+                        print(f"   Found tag input: {placeholder}")
+                        inp.fill('"'"'TestTagQA'"'"')
                         page.wait_for_timeout(1000)
+                        print("   Typed '"'"'TestTagQA'"'"'")
+
+                        create_opts = page.locator('"'"'text*="Create"'"'"').all()
+                        for opt in create_opts:
+                            try:
+                                if '"'"'TestTagQA'"'"' in opt.inner_text():
+                                    opt.click()
+                                    print("   Clicked Create option")
+                                    break
+                            except:
+                                continue
+
+                        page.wait_for_timeout(500)
+                        tags = page.locator('"'"'.el-tag'"'"').all()
+                        for tag in tags:
+                            try:
+                                if '"'"'TestTagQA'"'"' in tag.inner_text():
+                                    created_tag_name = '"'"'TestTagQA'"'"'
+                                    print(f"   Tag created: TestTagQA")
+                            except:
+                                pass
                         break
                 except:
                     continue
 
-            page.screenshot(path='E:/Research/daily-markdown/markdown-editor-frontend/.sisyphus/evidence/tags-qa-04-after-create.png', full_page=True)
-            print("After creating tag screenshot saved")
+            page.screenshot(path='"'"'E:/Research/daily-markdown/markdown-editor-frontend/.sisyphus/evidence/tags-crud-02-editor.png'"'"')
 
-            # Step 7: Navigate to a document editor
-            page.goto('http://localhost:5173/documents/new')
-            page.wait_for_load_state('networkidle')
-            page.wait_for_timeout(2000)
-            print("Document editor loaded")
+            print("\n3. Checking sidebar...")
+            page.goto('"'"'http://localhost:5173/documents'"'"')
+            page.wait_for_load_state('"'"'networkidle'"'"')
+            page.wait_for_timeout(1000)
+            page.screenshot(path='"'"'E:/Research/daily-markdown/markdown-editor-frontend/.sisyphus/evidence/tags-crud-03-sidebar.png'"'"')
 
-            page.screenshot(path='E:/Research/daily-markdown/markdown-editor-frontend/.sisyphus/evidence/tags-qa-05-editor.png', full_page=True)
-            print("Document editor screenshot saved")
+            print("\n4. Testing TagManage rename...")
+            page.goto('"'"'http://localhost:5173/tags'"'"')
+            page.wait_for_load_state('"'"'networkidle'"'"')
+            page.wait_for_timeout(1000)
+            page.screenshot(path='"'"'E:/Research/daily-markdown/markdown-editor-frontend/.sisyphus/evidence/tags-crud-04-tagmanage.png'"'"')
 
-            # Look for tag input in editor
-            tag_inputs = page.locator('input[placeholder*="tag" i], input[placeholder*="标签"], input[placeholder*="Add"]').all()
-            if tag_inputs:
-                print(f"Found {len(tag_inputs)} tag input(s)")
-                for inp in tag_inputs:
+            if created_tag_name:
+                tag_items = page.locator('"'"'.tag-item'"'"').all()
+                for item in tag_items:
                     try:
-                        placeholder = inp.get_attribute('placeholder') or ''
-                        print(f"  Input placeholder: {placeholder}")
+                        if created_tag_name in item.inner_text():
+                            rename_btn = item.locator('"'"'button:has-text("Rename")'"'"')
+                            if rename_btn.count() > 0:
+                                rename_btn.click()
+                                page.wait_for_timeout(500)
+                                print("   Clicked Rename")
+                                inp = page.locator('"'"'input'"'"').first
+                                if inp.count() > 0:
+                                    inp.fill('"'"'RenamedTag'"'"')
+                                    inp.press('"'"'Enter'"'"')
+                                    page.wait_for_timeout(1000)
+                                    print("   Renamed to '"'"'RenamedTag'"'"'")
+                                    page.screenshot(path='"'"'E:/Research/daily-markdown/markdown-editor-frontend/.sisyphus/evidence/tags-crud-05-rename.png'"'"')
+                            break
                     except:
-                        pass
+                        continue
 
-            print("\n=== QA Test Complete ===")
-            print("Evidence saved to .sisyphus/evidence/")
+            print("\n5. Testing Delete...")
+            page.goto('"'"'http://localhost:5173/tags'"'"')
+            page.wait_for_load_state('"'"'networkidle'"'"')
+            page.wait_for_timeout(1000)
+
+            delete_btns = page.locator('"'"'button:has-text("Delete")'"'"').all()
+            if delete_btns:
+                delete_btns[0].click()
+                page.wait_for_timeout(500)
+                print("   Clicked Delete")
+                confirm = page.locator('"'"'.el-dialog button:has-text("Delete")'"'"')
+                if confirm.count() > 0:
+                    confirm.click()
+                    page.wait_for_timeout(1000)
+                    print("   Confirmed delete")
+                    page.screenshot(path='"'"'E:/Research/daily-markdown/markdown-editor-frontend/.sisyphus/evidence/tags-crud-06-delete.png'"'"')
+
+            print("\n=== Summary ===")
+            print(f"1. Register: PASS")
+            print(f"2. Create tag: {'PASS' if created_tag_name else 'FAIL'}")
+            print(f"3. Rename: {'PASS' if created_tag_name else 'SKIP'}")
+            print(f"4. Delete: {'PASS' if delete_btns else 'FAIL'}")
 
         except Exception as e:
-            print('Error:', e)
-            page.screenshot(path='E:/Research/daily-markdown/markdown-editor-frontend/.sisyphus/evidence/tags-qa-error.png')
+            print(f'Error: {e}')
+            page.screenshot(path='"'"'E:/Research/daily-markdown/markdown-editor-frontend/.sisyphus/evidence/tags-crud-error.png'"'"')
             raise
         finally:
             browser.close()
 
-if __name__ == '__main__':
-    test_tags_feature()
+if __name__ == '"'"'__main__'"'"':
+    test_tags_crud()

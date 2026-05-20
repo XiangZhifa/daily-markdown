@@ -139,9 +139,6 @@ async function executeDelete() {
             >
               {{ tag.name }}
             </span>
-            <span class="text-gray-400 text-sm">
-              {{ tag.documentCount ?? 0 }} document{{ (tag.documentCount ?? 0) === 1 ? '' : 's' }}
-            </span>
           </template>
         </div>
 
@@ -182,9 +179,7 @@ async function executeDelete() {
           Delete tag <strong>"{{ deletingTag.name }}"</strong>?
         </p>
         <p class="mt-2 text-gray-500">
-          It will be removed from
-          <strong>{{ deletingTag.documentCount ?? 0 }}</strong>
-          document{{ (deletingTag.documentCount ?? 0) === 1 ? '' : 's' }}.
+          This tag will be removed from all associated documents.
         </p>
       </template>
       <template #footer>
