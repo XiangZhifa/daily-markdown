@@ -1,0 +1,46 @@
+# Dependencies
+node_modules/
+*/node_modules/
+
+# Build outputs
+dist/
+*/dist/
+
+# Environment files (keep .env.example)
+.env
+.env.development
+.env.production
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Test outputs
+coverage/
+
+# Temporary files
+*.tmp
+*.temp
+stderr.txt
+stdout.txt
+
+# OpenCode session data
+.sisyphus/
+
+# pnpm
+.pnpm/
+
+docs/TODO_PLANS.md
+
+# Database
+markdown-editor-backend/data/database.sqlite
