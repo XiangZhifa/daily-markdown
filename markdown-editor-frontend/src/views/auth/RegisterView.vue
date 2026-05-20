@@ -97,7 +97,7 @@ async function handleRegister() {
       password: form.value.password
     })
     ElMessage.success('Registration successful')
-    router.push('/login')
+    router.push('/auth/login')
   } catch (error: any) {
     const message = error?.response?.data?.message || error?.message || ''
     if (message.includes('用户名已被注册') || message.includes('username')) {
