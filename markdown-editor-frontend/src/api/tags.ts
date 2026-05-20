@@ -36,8 +36,3 @@ export async function renameTag(id: number, data: TagUpdate): Promise<Tag> {
 export async function deleteTag(id: number): Promise<void> {
   await request.delete(`/tags/${id}`)
 }
-
-export async function getTagDocumentCount(id: number): Promise<{ count: number }> {
-  const response: AxiosResponse<{ count: number }> = await request.get(`/tags/${id}/documents`)
-  return response.data
-}
