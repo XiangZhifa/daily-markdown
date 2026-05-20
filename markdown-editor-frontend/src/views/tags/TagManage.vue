@@ -181,6 +181,7 @@ async function executeDelete() {
         </p>
         <p class="mt-2 text-gray-500">
           This tag will be removed from all associated documents.
+          <!-- Note: documentCount not available from backend API - cannot show specific count -->
         </p>
       </template>
       <template #footer>

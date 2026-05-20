@@ -69,9 +69,7 @@ function clearTagFilter() {
       >
         <el-icon class="tag-icon"><Document /></el-icon>
         <span class="tag-name">{{ tag.name }}</span>
-        <span v-if="tag.documentCount !== undefined" class="tag-count">
-          {{ tag.documentCount }}
-        </span>
+        <!-- documentCount not available from backend API - graceful degradation -->
       </div>
     </div>
   </div>
