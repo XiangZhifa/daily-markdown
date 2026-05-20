@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { ElAvatar, ElButton, ElScrollbar } from 'element-plus'
+import { DataAnalysis, SwitchButton } from '@element-plus/icons-vue'
 import TagSidebar from '@/components/business/TagSidebar.vue'
 
 const authStore = useAuthStore()
