@@ -1,5 +1,4 @@
 import request from './request'
-import type { AxiosResponse } from 'axios'
 
 export interface MonthlyStats {
   month: string
@@ -12,23 +11,19 @@ export interface TagStats {
   percentage: number
 }
 
+// Statistics API returns data wrapped in {code: 0, data: [...], message: "success"}
+// The response interceptor returns response.data (the wrapper), so we need .data to get the actual array
 export async function getMonthlyStats(year: number): Promise<MonthlyStats[]> {
-  const response: AxiosResponse<MonthlyStats[]> = await request.get(`/statistics/monthly`, {
-    params: { year }
-  })
+  const response: any = await request.get(`/statistics/monthly`, { params: { year } })
   return response.data
 }
 
 export async function getTagStats(year: number, month: number): Promise<TagStats[]> {
-  const response: AxiosResponse<TagStats[]> = await request.get(`/statistics/tags`, {
-    params: { year, month }
-  })
+  const response: any = await request.get(`/statistics/tags`, { params: { year, month } })
   return response.data
 }
 
 export async function getYearlyStats(year: number): Promise<MonthlyStats[]> {
-  const response: AxiosResponse<MonthlyStats[]> = await request.get(`/statistics/yearly`, {
-    params: { year }
-  })
+  const response: any = await request.get(`/statistics/yearly`, { params: { year } })
   return response.data
 }
