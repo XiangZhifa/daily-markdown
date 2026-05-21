@@ -6,6 +6,9 @@ node_modules/
 dist/
 */dist/
 
+.vite
+*/vite/
+
 # Environment files (keep .env.example)
 .env
 .env.development
