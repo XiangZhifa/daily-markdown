@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed, watch, onMounted, nextTick } from 'vue'
 import * as echarts from 'echarts'
 
 type ChartType = 'bar' | 'pie'
@@ -155,7 +155,8 @@ watch(() => props.loading, () => {
   }
 })
 
-onMounted(() => {
+onMounted(async () => {
+  await nextTick()
   initChart()
   window.addEventListener('resize', resizeChart)
 })
