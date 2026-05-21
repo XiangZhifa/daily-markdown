@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, nextTick } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue'
 import * as echarts from 'echarts'
 
 type ChartType = 'bar' | 'pie'
@@ -28,6 +28,7 @@ const emit = defineEmits<{
 
 const chartRef = ref<HTMLDivElement | null>(null)
 let chartInstance: echarts.ECharts | null = null
+let resizeObserver: ResizeObserver | null = null
 
 const isEmpty = computed(() => !props.loading && (!props.data || props.data.length === 0))
 
@@ -36,14 +37,24 @@ const darkThemeColors = ['#00d4ff', '#00ff88', '#ffcc00', '#ff6b6b', '#a855f7', 
 function initChart() {
   if (!chartRef.value) return
 
-  chartInstance = echarts.init(chartRef.value, 'dark')
-  updateChart()
+  // Wait for DOM dimensions to be computed
+  const container = chartRef.value
+  const attemptInit = (retries = 3) => {
+    if (container.clientWidth > 0 && container.clientHeight > 0) {
+      chartInstance = echarts.init(container, 'dark')
+      updateChart()
 
-  chartInstance.on('click', (params: echarts.ECElementEvent) => {
-    if (params.data) {
-      emit('click', params.data as BarDataPoint | PieDataPoint)
+      chartInstance.on('click', (params: echarts.ECElementEvent) => {
+        if (params.data) {
+          emit('click', params.data as BarDataPoint | PieDataPoint)
+        }
+      })
+    } else if (retries > 0) {
+      // Retry after a short delay to allow CSS layout to complete
+      setTimeout(() => attemptInit(retries - 1), 50)
     }
-  })
+  }
+  attemptInit()
 }
 
 function updateChart() {
@@ -158,7 +169,19 @@ watch(() => props.loading, () => {
 onMounted(async () => {
   await nextTick()
   initChart()
-  window.addEventListener('resize', resizeChart)
+  
+  // Use ResizeObserver to handle container resize
+  if (chartRef.value) {
+    resizeObserver = new ResizeObserver(() => {
+      chartInstance?.resize()
+    })
+    resizeObserver.observe(chartRef.value)
+  }
+})
+
+onUnmounted(() => {
+  resizeObserver?.disconnect()
+  chartInstance?.dispose()
 })
 
 defineExpose({
@@ -182,6 +205,7 @@ defineExpose({
 
 <style scoped>
 .statistics-chart {
-  min-height: 300px;
+  height: 100%;
+  width: 100%;
 }
 </style>

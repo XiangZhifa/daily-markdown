@@ -11,8 +11,9 @@ export interface TagStats {
   percentage: number
 }
 
-// Statistics API returns data wrapped in {code: 0, data: [...], message: "success"}
-// The response interceptor returns response.data (the wrapper), so we need .data to get the actual array
+// Backend returns {code: 0, data: [...], message: "success"}
+// Axios interceptor returns response.data (the wrapper object)
+// So response.data.data gives us the actual array
 export async function getMonthlyStats(year: number): Promise<MonthlyStats[]> {
   const response: any = await request.get(`/statistics/monthly`, { params: { year } })
   return response.data
