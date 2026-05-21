@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue'
 import { useDocumentsStore } from '@/stores/documents'
-import { useRouter } from 'vue-router'
+import { useTagsStore } from '@/stores/tags'
+import { useRoute, useRouter } from 'vue-router'
 import type { Tag } from '@/api/documents'
 import { Search, Loading } from '@element-plus/icons-vue'
 
 const documentsStore = useDocumentsStore()
+const tagsStore = useTagsStore()
+const route = useRoute()
 const router = useRouter()
 
 // Search & Filter state
@@ -19,6 +22,37 @@ const pageSize = 50
 // Multi-select state
 const selectedIds = ref<number[]>([])
 const showBatchDelete = ref(false)
+
+// Initialize filters from URL query params
+onMounted(async () => {
+  // First load all tags so we can match by name if needed
+  await tagsStore.fetchTags()
+
+  // Read startDate/endDate from URL query params (from statistics drill-down)
+  if (route.query.startDate && route.query.endDate) {
+    const start = new Date(route.query.startDate as string)
+    const end = new Date(route.query.endDate as string)
+    if (!isNaN(start.getTime()) && !isNaN(end.getTime())) {
+      dateRange.value = [start, end]
+    }
+  }
+  // Read tagName from URL query params (from statistics pie chart)
+  if (route.query.tagName) {
+    const tagName = route.query.tagName as string
+    // Find tag by name in the loaded tags
+    const match = tagsStore.tags.find(t => t.name === tagName)
+    if (match) {
+      selectedTags.value = [match.id]
+    }
+  }
+  // Read tagIds from URL query params
+  if (route.query.tagIds) {
+    const ids = (route.query.tagIds as string).split(',').map(Number).filter(id => !isNaN(id))
+    selectedTags.value = ids
+  }
+  
+fetchDocs()
+})
 
 // Computed all unique tags from loaded documents
 const allTags = computed<{ id: number; name: string }[]>(() => {

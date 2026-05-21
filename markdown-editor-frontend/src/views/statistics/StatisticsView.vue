@@ -99,8 +99,15 @@ function onPieClick(data: BarDataPoint | PieDataPoint) {
   })
 }
 
-watch([currentYear, currentMonthIndex], () => {
+watch([currentYear], () => {
+  // Year changed - update both bar chart and pie chart
   statisticsStore.setYear(currentYear.value)
+  statisticsStore.fetchMonthlyStats(currentYear.value)
+  statisticsStore.fetchTagStats(currentYear.value, currentMonthIndex.value + 1)
+})
+
+watch([currentMonthIndex], () => {
+  // Only month changed - update pie chart only (bar chart shows yearly data)
   statisticsStore.setMonth(selectedMonth.value)
   statisticsStore.fetchTagStats(currentYear.value, currentMonthIndex.value + 1)
 })
