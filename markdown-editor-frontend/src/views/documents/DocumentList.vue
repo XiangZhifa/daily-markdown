@@ -172,11 +172,6 @@ function getDisplayTags(tags?: Tag[]): Tag[] {
   return tags?.slice(0, 3) || []
 }
 
-// Actions
-onMounted(() => {
-  fetchDocs()
-})
-
 function createNew() {
   router.push('/documents/new')
 }
