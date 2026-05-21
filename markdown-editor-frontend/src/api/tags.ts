@@ -1,5 +1,4 @@
 import request from './request'
-import type { AxiosResponse } from 'axios'
 
 export interface Tag {
   id: number
@@ -19,18 +18,15 @@ export interface TagUpdate {
 }
 
 export async function getTags(): Promise<Tag[]> {
-  const response: AxiosResponse<Tag[]> = await request.get('/tags')
-  return response.data
+  return request.get<Tag[]>('/tags') as unknown as Promise<Tag[]>
 }
 
 export async function createTag(data: TagCreate): Promise<Tag> {
-  const response: AxiosResponse<Tag> = await request.post('/tags', data)
-  return response.data
+  return request.post<Tag>('/tags', data) as unknown as Promise<Tag>
 }
 
 export async function renameTag(id: number, data: TagUpdate): Promise<Tag> {
-  const response: AxiosResponse<Tag> = await request.patch(`/tags/${id}`, data)
-  return response.data
+  return request.patch<Tag>(`/tags/${id}`, data) as unknown as Promise<Tag>
 }
 
 export async function deleteTag(id: number): Promise<void> {

@@ -6,25 +6,20 @@ export interface MonthlyStats {
 }
 
 export interface TagStats {
+  tagId?: number
   tagName: string
   count: number
-  percentage: number
+  percentage?: number
 }
 
-// Backend returns {code: 0, data: [...], message: "success"}
-// Axios interceptor returns response.data (the wrapper object)
-// So response.data.data gives us the actual array
 export async function getMonthlyStats(year: number): Promise<MonthlyStats[]> {
-  const response: any = await request.get(`/statistics/monthly`, { params: { year } })
-  return response.data
+  return request.get<MonthlyStats[]>(`/statistics/monthly`, { params: { year } }) as unknown as Promise<MonthlyStats[]>
 }
 
 export async function getTagStats(year: number, month: number): Promise<TagStats[]> {
-  const response: any = await request.get(`/statistics/tags`, { params: { year, month } })
-  return response.data
+  return request.get<TagStats[]>(`/statistics/tags`, { params: { year, month } }) as unknown as Promise<TagStats[]>
 }
 
 export async function getYearlyStats(year: number): Promise<MonthlyStats[]> {
-  const response: any = await request.get(`/statistics/yearly`, { params: { year } })
-  return response.data
+  return request.get<MonthlyStats[]>(`/statistics/yearly`, { params: { year } }) as unknown as Promise<MonthlyStats[]>
 }

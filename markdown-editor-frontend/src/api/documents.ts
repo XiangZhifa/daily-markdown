@@ -1,5 +1,4 @@
 import request from './request'
-import type { AxiosResponse } from 'axios'
 
 export interface Document {
   id: number
@@ -33,16 +32,13 @@ export interface DocumentListResponse {
   hasMore: boolean
 }
 
-// Backend returns: { code: number, data: Document[], message: string }
-// After response interceptor, request.get() returns { code, data, message } directly
-// So response IS the unwrapped data
 export async function getDocuments(params?: {
   keyword?: string
   startDate?: string
   endDate?: string
   tagIds?: string
   page?: number
-}): Promise<{ data: Document[], total: number, page: number, hasMore: boolean }> {
+}): Promise<DocumentListResponse> {
   // Build query params - backend uses startDate/endDate
   const queryParams: Record<string, string | number | undefined> = {}
   if (params?.keyword) queryParams.keyword = params.keyword
@@ -51,13 +47,13 @@ export async function getDocuments(params?: {
   if (params?.tagIds) queryParams.tags = params.tagIds
   if (params?.page) queryParams.page = params.page
 
-  // response is already unwrapped: { code, data: Document[], message }
-  const response = await request.get('/documents', { params: queryParams })
+  // Response interceptor now unwraps {code, data, message} to just data
+  const data = await request.get<Document[]>('/documents', { params: queryParams }) as unknown as Document[]
   return {
-    data: response.data as Document[],
-    total: (response.data as Document[]).length,
+    data,
+    total: data.length,
     page: params?.page || 1,
-    hasMore: (response.data as Document[]).length >= 50
+    hasMore: data.length >= 50
   }
 }
 
@@ -67,24 +63,21 @@ export async function searchDocuments(params?: {
   endDate?: string
   tagIds?: string
   page?: number
-}): Promise<{ data: Document[], total: number, page: number, hasMore: boolean }> {
+}): Promise<DocumentListResponse> {
   // Backend uses same endpoint for search - GET /documents with keyword param
   return getDocuments(params)
 }
 
 export async function getDocument(id: number): Promise<Document> {
-  const response: AxiosResponse<Document> = await request.get(`/documents/${id}`)
-  return response.data
+  return request.get<Document>(`/documents/${id}`) as unknown as Promise<Document>
 }
 
 export async function createDocument(data: DocumentCreate): Promise<Document> {
-  const response: AxiosResponse<Document> = await request.post('/documents', data)
-  return response.data
+  return request.post<Document>('/documents', data) as unknown as Promise<Document>
 }
 
 export async function updateDocument(id: number, data: DocumentUpdate): Promise<Document> {
-  const response: AxiosResponse<Document> = await request.patch(`/documents/${id}`, data)
-  return response.data
+  return request.patch<Document>(`/documents/${id}`, data) as unknown as Promise<Document>
 }
 
 export async function deleteDocument(id: number): Promise<void> {
@@ -92,16 +85,13 @@ export async function deleteDocument(id: number): Promise<void> {
 }
 
 export async function restoreDocument(id: number): Promise<Document> {
-  const response: AxiosResponse<Document> = await request.post(`/documents/${id}/restore`)
-  return response.data
+  return request.post<Document>(`/documents/${id}/restore`) as unknown as Promise<Document>
 }
 
 export async function addDocumentTags(documentId: number, tagIds: number[]): Promise<Document> {
-  const response: AxiosResponse<Document> = await request.post(`/documents/${documentId}/tags`, { tagIds })
-  return response.data
+  return request.post<Document>(`/documents/${documentId}/tags`, { tagIds }) as unknown as Promise<Document>
 }
 
 export async function removeDocumentTags(documentId: number, tagIds: number[]): Promise<Document> {
-  const response: AxiosResponse<Document> = await request.delete(`/documents/${documentId}/tags`, { data: { tagIds } })
-  return response.data
+  return request.delete<Document>(`/documents/${documentId}/tags`, { data: { tagIds } }) as unknown as Promise<Document>
 }

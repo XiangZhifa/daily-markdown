@@ -1,5 +1,4 @@
 import request from './request'
-import type { AxiosResponse } from 'axios'
 
 export interface LoginData {
   username: string
@@ -25,18 +24,18 @@ export interface AuthResponse {
 }
 
 export async function login(data: LoginData): Promise<AuthResponse> {
-  const response: AxiosResponse<AuthResponse> = await request.post('/auth/login', data)
-  return response.data
+  const response = await request.post<AuthResponse>('/auth/login', data)
+  return response as unknown as AuthResponse
 }
 
 export async function register(data: RegisterData): Promise<AuthResponse> {
-  const response: AxiosResponse<AuthResponse> = await request.post('/auth/register', data)
-  return response.data
+  const response = await request.post<AuthResponse>('/auth/register', data)
+  return response as unknown as AuthResponse
 }
 
 export async function getProfile(): Promise<UserProfile> {
-  const response: AxiosResponse<UserProfile> = await request.get('/auth/profile')
-  return response.data
+  const response = await request.get<UserProfile>('/auth/profile')
+  return response as unknown as UserProfile
 }
 
 export async function logout(): Promise<void> {
@@ -44,9 +43,9 @@ export async function logout(): Promise<void> {
 }
 
 export async function updatePassword(oldPassword: string, newPassword: string): Promise<{ message: string }> {
-  const response: AxiosResponse<{ message: string }> = await request.put('/auth/password', {
+  await request.put('/auth/password', {
     oldPassword,
     newPassword,
   })
-  return response.data
+  return { message: 'Password updated successfully' }
 }

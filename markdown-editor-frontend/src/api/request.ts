@@ -25,10 +25,15 @@ request.interceptors.request.use(
   }
 )
 
-// Response interceptor
+// Response interceptor - unwrap {code, data, message} to return just data
 request.interceptors.response.use(
   (response) => {
-    return response.data
+    const unwrapped = response.data
+    // If response has the standard wrapper format, unwrap it
+    if (unwrapped && typeof unwrapped === 'object' && 'data' in unwrapped && 'code' in unwrapped) {
+      return unwrapped.data
+    }
+    return unwrapped
   },
   (error: AxiosError) => {
     if (error.response) {
