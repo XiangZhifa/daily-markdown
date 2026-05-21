@@ -2,9 +2,10 @@
 import { ref, computed, onMounted } from 'vue'
 import { useTagsStore } from '@/stores/tags'
 import { ElMessage } from 'element-plus'
-import { Refresh, Loading } from '@element-plus/icons-vue'
+import { Refresh } from '@element-plus/icons-vue'
 import type { Tag } from '@/api/tags'
 import ConfirmDialog from '@/components/common/ConfirmDialog.vue'
+import LoadingSpinner from '@/components/common/LoadingSpinner.vue'
 
 const tagsStore = useTagsStore()
 
@@ -106,7 +107,7 @@ async function executeDelete() {
 
     <!-- Loading -->
     <div v-if="tagsStore.loading" class="text-center py-8">
-      <el-icon class="is-loading text-4xl"><Loading /></el-icon>
+      <LoadingSpinner size="lg" />
     </div>
 
     <!-- Empty State -->

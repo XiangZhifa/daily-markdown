@@ -3,8 +3,9 @@ import { ref, computed, watch, onMounted } from 'vue'
 import { useDocumentsStore } from '@/stores/documents'
 import { useTagsStore } from '@/stores/tags'
 import { useRoute, useRouter } from 'vue-router'
-import { Search, Loading } from '@element-plus/icons-vue'
+import { Search } from '@element-plus/icons-vue'
 import EmptyState from '@/components/common/EmptyState.vue'
+import LoadingSpinner from '@/components/common/LoadingSpinner.vue'
 import DocumentCard from '@/components/business/DocumentCard.vue'
 
 const documentsStore = useDocumentsStore()
@@ -260,7 +261,7 @@ function openDocument(id: number) {
 
     <!-- Loading -->
     <div v-if="documentsStore.loading" class="text-center py-8">
-      <el-icon class="is-loading text-4xl"><Loading /></el-icon>
+      <LoadingSpinner size="lg" />
     </div>
 
     <!-- Empty State -->
