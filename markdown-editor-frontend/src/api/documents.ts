@@ -12,7 +12,7 @@ export interface Document {
 
 export interface DocumentCreate {
   title: string
-  content?: string
+  content: string
 }
 
 export interface DocumentUpdate {

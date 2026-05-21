@@ -29,9 +29,18 @@ request.interceptors.request.use(
 request.interceptors.response.use(
   (response) => {
     const unwrapped = response.data
-    // If response has the standard wrapper format, unwrap it
+    // If response has the standard wrapper format with success code, unwrap it
     if (unwrapped && typeof unwrapped === 'object' && 'data' in unwrapped && 'code' in unwrapped) {
-      return unwrapped.data
+      // Only unwrap if code is 0 (success)
+      if (unwrapped.code === 0) {
+        return unwrapped.data
+      }
+      // For error responses with code !== 0, reject the promise with the error info
+      return Promise.reject({
+        code: unwrapped.code,
+        message: unwrapped.message,
+        data: unwrapped.data
+      })
     }
     return unwrapped
   },
