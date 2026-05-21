@@ -4,11 +4,15 @@ interface Props {
   message: string
   confirmText?: string
   cancelText?: string
+  modelValue?: boolean
+  loading?: boolean
 }
 
 withDefaults(defineProps<Props>(), {
   confirmText: 'Confirm',
-  cancelText: 'Cancel'
+  cancelText: 'Cancel',
+  modelValue: false,
+  loading: false
 })
 
 const emit = defineEmits<{
@@ -19,7 +23,7 @@ const emit = defineEmits<{
 
 <template>
   <ElDialog
-    :model-value="true"
+    :model-value="modelValue"
     :title="title"
     width="400px"
     :close-on-click-modal="true"
@@ -31,7 +35,7 @@ const emit = defineEmits<{
     <template #footer>
       <div class="dialog-footer">
         <ElButton @click="emit('cancel')">{{ cancelText }}</ElButton>
-        <ElButton type="primary" @click="emit('confirm')">{{ confirmText }}</ElButton>
+        <ElButton type="danger" :loading="loading" @click="emit('confirm')">{{ confirmText }}</ElButton>
       </div>
     </template>
   </ElDialog>

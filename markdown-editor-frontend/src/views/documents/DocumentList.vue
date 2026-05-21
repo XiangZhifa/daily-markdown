@@ -3,8 +3,9 @@ import { ref, computed, watch, onMounted } from 'vue'
 import { useDocumentsStore } from '@/stores/documents'
 import { useTagsStore } from '@/stores/tags'
 import { useRoute, useRouter } from 'vue-router'
-import type { Tag } from '@/api/documents'
 import { Search, Loading } from '@element-plus/icons-vue'
+import EmptyState from '@/components/common/EmptyState.vue'
+import DocumentCard from '@/components/business/DocumentCard.vue'
 
 const documentsStore = useDocumentsStore()
 const tagsStore = useTagsStore()
@@ -162,16 +163,6 @@ async function batchDelete() {
   showBatchDelete.value = false
 }
 
-// Card helpers
-function getPreview(content: string): string {
-  const text = content.replace(/[#*`_\[\]]/g, '').trim()
-  return text.length > 80 ? text.substring(0, 80) + '...' : text
-}
-
-function getDisplayTags(tags?: Tag[]): Tag[] {
-  return tags?.slice(0, 3) || []
-}
-
 function createNew() {
   router.push('/documents/new')
 }
@@ -273,10 +264,13 @@ function openDocument(id: number) {
     </div>
 
     <!-- Empty State -->
-    <div v-else-if="documentsStore.documents.length === 0" class="text-center py-8">
-      <p class="text-gray-400 mb-4">No documents yet</p>
-      <el-button type="primary" @click="createNew">创建第一篇文档</el-button>
-    </div>
+    <EmptyState
+      v-else-if="documentsStore.documents.length === 0"
+      title="No documents yet"
+      message="Create your first document to get started."
+      action-text="创建第一篇文档"
+      @action="createNew"
+    />
 
     <!-- Document List -->
     <div v-else>
@@ -290,50 +284,14 @@ function openDocument(id: number) {
       </div>
 
       <div class="grid gap-4">
-        <div
+        <DocumentCard
           v-for="doc in documentsStore.documents"
           :key="doc.id"
-          class="card cursor-pointer hover:border-primary transition-colors relative"
-          @click="openDocument(doc.id)"
-        >
-          <!-- Checkbox -->
-          <el-checkbox
-            :model-value="selectedIds.includes(doc.id)"
-            class="absolute top-4 left-4"
-            @change="(val: boolean) => { val ? selectedIds.push(doc.id) : selectedIds.splice(selectedIds.indexOf(doc.id), 1); showBatchDelete = selectedIds.length > 0 }"
-            @click.stop
-          />
-
-          <!-- Content -->
-          <div class="pl-8">
-            <h3 class="text-lg font-semibold">{{ doc.title }}</h3>
-            
-            <!-- Tags -->
-            <div v-if="doc.tags?.length" class="flex gap-1 mt-2">
-              <el-tag
-                v-for="tag in getDisplayTags(doc.tags)"
-                :key="tag.id"
-                size="small"
-                type="info"
-              >
-                {{ tag.name }}
-              </el-tag>
-              <el-tag v-if="doc.tags.length > 3" size="small" type="info">
-                +{{ doc.tags.length - 3 }}
-              </el-tag>
-            </div>
-
-            <!-- Preview -->
-            <p v-if="doc.content" class="text-gray-400 text-sm mt-2 line-clamp-2">
-              {{ getPreview(doc.content) }}
-            </p>
-
-            <!-- Meta -->
-            <p class="text-gray-500 text-xs mt-2">
-              Updated: {{ new Date(doc.updatedAt).toLocaleString() }}
-            </p>
-          </div>
-        </div>
+          :document="doc"
+          :selected="selectedIds.includes(doc.id)"
+          @select="(id: number) => { const idx = selectedIds.indexOf(id); if (idx === -1) { selectedIds.push(id) } else { selectedIds.splice(idx, 1) }; showBatchDelete = selectedIds.length > 0 }"
+          @click="openDocument"
+        />
       </div>
 
       <!-- Load More -->
@@ -345,17 +303,4 @@ function openDocument(id: number) {
 </template>
 
 <style scoped>
-.card {
-  border: 1px solid var(--el-border-color);
-  border-radius: 8px;
-  padding: 16px;
-  background: var(--el-bg-color);
-}
-
-.line-clamp-2 {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
 </style>

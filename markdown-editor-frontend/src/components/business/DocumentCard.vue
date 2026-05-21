@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { Document } from '@/types/document'
+import TagBadge from './TagBadge.vue'
 
 const props = defineProps<{
   document: Document
@@ -55,9 +56,11 @@ const handleClick = () => {
       <h3 class="title">{{ document.title }}</h3>
 
       <div v-if="displayTags.length > 0" class="tags">
-        <el-tag v-for="tag in displayTags" :key="tag.id" size="small" effect="plain">
-          {{ tag.name }}
-        </el-tag>
+        <TagBadge
+          v-for="tag in displayTags"
+          :key="tag.id"
+          :name="tag.name"
+        />
         <el-tag v-if="remainingCount > 0" size="small" effect="plain" type="info">
           +{{ remainingCount }} more
         </el-tag>

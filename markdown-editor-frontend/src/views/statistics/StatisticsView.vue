@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import { Folder } from '@element-plus/icons-vue'
 import { useStatisticsStore } from '@/stores/statistics'
 import StatisticsChart from '@/components/business/StatisticsChart.vue'
+import EmptyState from '@/components/common/EmptyState.vue'
 import type { BarDataPoint, PieDataPoint } from '@/components/business'
 
 const router = useRouter()
@@ -204,13 +206,14 @@ onMounted(() => {
     </div>
 
     <!-- Empty State -->
-    <div v-if="isEmpty" class="flex flex-col items-center justify-center h-64">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 empty-icon mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-      </svg>
-      <p class="text-lg empty-text">本月暂无文章</p>
-      <p class="text-sm empty-text-dim mt-2">开始创作以查看统计数据</p>
-    </div>
+    <EmptyState
+      v-if="isEmpty"
+      title="本月暂无文章"
+      message="开始创作以查看统计数据"
+      action-text="Create Document"
+      :action-icon="Folder"
+      @action="$router.push('/documents/new')"
+    />
   </div>
 </template>
 
@@ -243,15 +246,4 @@ onMounted(() => {
   color: var(--el-text-color-secondary);
 }
 
-.empty-icon {
-  color: var(--el-text-color-disabled);
-}
-
-.empty-text {
-  color: var(--el-text-color-secondary);
-}
-
-.empty-text-dim {
-  color: var(--el-text-color-disabled);
-}
 </style>

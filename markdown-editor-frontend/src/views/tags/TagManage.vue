@@ -4,6 +4,7 @@ import { useTagsStore } from '@/stores/tags'
 import { ElMessage } from 'element-plus'
 import { Refresh, Loading } from '@element-plus/icons-vue'
 import type { Tag } from '@/api/tags'
+import ConfirmDialog from '@/components/common/ConfirmDialog.vue'
 
 const tagsStore = useTagsStore()
 
@@ -168,33 +169,15 @@ async function executeDelete() {
     </div>
 
     <!-- Delete Confirmation Dialog -->
-    <el-dialog
-      v-model="showDeleteDialog"
+    <ConfirmDialog
+      :model-value="showDeleteDialog"
       title="Confirm Delete"
-      width="400px"
-      :close-on-click-modal="false"
-      @close="cancelDelete"
-    >
-      <template v-if="deletingTag">
-        <p>
-          Delete tag <strong>"{{ deletingTag.name }}"</strong>?
-        </p>
-        <p class="mt-2 text-gray-500">
-          This tag will be removed from all associated documents.
-          <!-- Note: documentCount not available from backend API - cannot show specific count -->
-        </p>
-      </template>
-      <template #footer>
-        <el-button @click="cancelDelete">Cancel</el-button>
-        <el-button
-          type="danger"
-          :loading="deleteConfirmLoading"
-          @click="executeDelete"
-        >
-          Delete
-        </el-button>
-      </template>
-    </el-dialog>
+      :message="deletingTag ? `Delete tag '${deletingTag.name}'? This tag will be removed from all associated documents.` : ''"
+      confirm-text="Delete"
+      :loading="deleteConfirmLoading"
+      @confirm="executeDelete"
+      @cancel="cancelDelete"
+    />
   </div>
 </template>
 
