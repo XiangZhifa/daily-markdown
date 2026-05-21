@@ -31,3 +31,18 @@ html.dark {
   --el-table-tr-bg-color: #2D2D2D;
   --el-table-header-bg-color: #3D3D3D;
 }
+
+/* Error Toast Dark Theme */
+.error-toast-dark {
+  background-color: #1a1a2e !important;
+  border: 1px solid #ff4757 !important;
+  color: #ff6b81 !important;
+}
+
+.error-toast-dark .el-message__content {
+  color: #ff6b81 !important;
+}
+
+.error-toast-dark .el-icon {
+  color: #ff4757 !important;
+}
