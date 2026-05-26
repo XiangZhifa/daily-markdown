@@ -23,7 +23,7 @@ import { StatisticsModule } from './modules/statistics/statistics.module';
     ThrottlerModule.forRoot({
       throttlers: [{
         ttl: 60000,
-        limit: 5,
+        limit: 10,
       }],
     }),
     AuthModule,
