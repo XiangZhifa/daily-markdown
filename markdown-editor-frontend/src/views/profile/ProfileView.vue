@@ -16,7 +16,7 @@ onMounted(async () => {
   try {
     await authStore.fetchProfile()
   } catch (error) {
-    console.error('Failed to fetch profile:', error)
+    console.error('获取用户资料失败:', error)
   } finally {
     profileLoading.value = false
   }

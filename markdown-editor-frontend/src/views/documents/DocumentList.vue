@@ -156,7 +156,7 @@ function selectAll() {
 }
 
 async function batchDelete() {
-  if (!confirm(`Delete ${selectedIds.value.length} documents?`)) return
+  if (!confirm(`确定删除 ${selectedIds.value.length} 个文档吗？`)) return
   for (const id of selectedIds.value) {
     await documentsStore.deleteDoc(id)
   }
@@ -177,8 +177,8 @@ function openDocument(id: number) {
   <div class="document-list p-6">
     <!-- Header -->
     <div class="flex justify-between items-center mb-6">
-      <h1 class="text-2xl font-bold">My Documents</h1>
-      <el-button type="primary" @click="createNew">+ New Document</el-button>
+      <h1 class="text-2xl font-bold">我的文档</h1>
+      <el-button type="primary" @click="createNew">+ 新建文档</el-button>
     </div>
 
     <!-- Filters -->
@@ -187,7 +187,7 @@ function openDocument(id: number) {
       <div class="flex gap-4">
         <el-input
           v-model="searchKeyword"
-          placeholder="Search by title..."
+          placeholder="按标题搜索..."
           clearable
           class="flex-1 max-w-md"
         >
@@ -199,8 +199,8 @@ function openDocument(id: number) {
           v-model="dateRange"
           type="datetimerange"
           range-separator="→"
-          start-placeholder="Start date"
-          end-placeholder="End date"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
           class="!w-auto"
           @change="fetchDocs"
         />
@@ -216,14 +216,14 @@ function openDocument(id: number) {
             {{ preset.label }}
           </el-button>
           <el-button v-if="dateRange" size="small" @click="clearDateRange">
-            Clear
+            清除
           </el-button>
         </div>
       </div>
 
       <!-- Tags Filter -->
       <div class="flex gap-4 items-center">
-        <span class="text-sm text-gray-500">Tags:</span>
+        <span class="text-sm text-gray-500">标签:</span>
         <div class="flex gap-2 flex-wrap">
           <el-tag
             v-for="tag in allTags"
@@ -248,13 +248,13 @@ function openDocument(id: number) {
 
     <!-- Batch Actions -->
     <div v-if="showBatchDelete" class="batch-actions mb-4 p-3 bg-red-50 rounded flex items-center justify-between">
-      <span class="text-red-600">{{ selectedIds.length }} selected</span>
+      <span class="text-red-600">已选择 {{ selectedIds.length }} 项</span>
       <div class="flex gap-2">
         <el-button size="small" @click="selectedIds = []; showBatchDelete = false">
-          Cancel
+          取消
         </el-button>
         <el-button type="danger" size="small" @click="batchDelete">
-          Delete Selected
+          删除所选
         </el-button>
       </div>
     </div>
@@ -267,8 +267,8 @@ function openDocument(id: number) {
     <!-- Empty State -->
     <EmptyState
       v-else-if="documentsStore.documents.length === 0"
-      title="No documents yet"
-      message="Create your first document to get started."
+      title="暂无文档"
+      message="创建您的第一篇文档开始使用"
       action-text="创建第一篇文档"
       @action="createNew"
     />
@@ -281,7 +281,7 @@ function openDocument(id: number) {
           :model-value="selectedIds.length === documentsStore.documents.length && documentsStore.documents.length > 0"
           @change="selectAll"
         />
-        <span class="text-sm text-gray-500">Select all</span>
+        <span class="text-sm text-gray-500">全选</span>
       </div>
 
       <div class="grid gap-4">
@@ -297,7 +297,7 @@ function openDocument(id: number) {
 
       <!-- Load More -->
       <div v-if="documentsStore.documents.length >= pageSize" class="text-center mt-6">
-        <el-button @click="loadMore">Load More</el-button>
+        <el-button @click="loadMore">加载更多</el-button>
       </div>
     </div>
   </div>

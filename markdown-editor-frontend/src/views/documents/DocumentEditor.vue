@@ -20,7 +20,7 @@ const { currentDoc, create, setCurrentDocument } = useDocument()
 const tagsStore = useTagsStore()
 
 // Document state
-const title = ref('Untitled Document')
+const title = ref('无标题文档')
 const content = ref('')
 const selectedTagIds = ref<number[]>([])
 const isNew = ref(true)
@@ -75,7 +75,7 @@ onMounted(async () => {
   } else {
     isNew.value = true
     docId.value = null
-    const newDoc = await create('Untitled Document')
+    const newDoc = await create('无标题文档')
     docId.value = newDoc.id
   }
 })
@@ -199,17 +199,17 @@ function insertMarkdown(prefix: string, suffix: string, placeholder: string) {
 }
 
 const toolbarButtons = [
-  { icon: 'bold', action: () => insertMarkdown('**', '**', 'bold text'), title: 'Bold (Ctrl+B)' },
-  { icon: 'italic', action: () => insertMarkdown('*', '*', 'italic text'), title: 'Italic (Ctrl+I)' },
-  { icon: 'document', action: () => insertMarkdown('# ', '', 'Heading'), title: 'Heading' },
-  { icon: 'tickets', action: () => insertMarkdown('## ', '', 'Heading'), title: 'Subheading' },
-  { icon: 'crop', action: () => insertMarkdown('### ', '', 'Heading'), title: 'Sub-subheading' },
-  { icon: 'list', action: () => insertMarkdown('- ', '', 'List item'), title: 'Bullet List' },
-  { icon: 'list', action: () => insertMarkdown('1. ', '', 'List item'), title: 'Numbered List' },
-  { icon: 'code', action: () => insertMarkdown('`', '`', 'code'), title: 'Inline Code' },
-  { icon: 'document', action: () => insertMarkdown('```\n', '\n```', 'code block'), title: 'Code Block' },
-  { icon: 'picture', action: () => insertMarkdown('![alt](', ')', 'image-url'), title: 'Image' },
-  { icon: 'link', action: () => insertMarkdown('[', '](url)', 'link text'), title: 'Link' },
+  { icon: 'bold', action: () => insertMarkdown('**', '**', '粗体文字'), title: '粗体 (Ctrl+B)' },
+  { icon: 'italic', action: () => insertMarkdown('*', '*', '斜体文字'), title: '斜体 (Ctrl+I)' },
+  { icon: 'document', action: () => insertMarkdown('# ', '', '标题'), title: '标题' },
+  { icon: 'tickets', action: () => insertMarkdown('## ', '', '副标题'), title: '副标题' },
+  { icon: 'crop', action: () => insertMarkdown('### ', '', '次级标题'), title: '次级标题' },
+  { icon: 'list', action: () => insertMarkdown('- ', '', '列表项'), title: '无序列表' },
+  { icon: 'list', action: () => insertMarkdown('1. ', '', '列表项'), title: '有序列表' },
+  { icon: 'code', action: () => insertMarkdown('`', '`', '代码'), title: '行内代码' },
+  { icon: 'document', action: () => insertMarkdown('```\n', '\n```', '代码块'), title: '代码块' },
+  { icon: 'picture', action: () => insertMarkdown('![alt](', ')', '图片链接'), title: '图片' },
+  { icon: 'link', action: () => insertMarkdown('[', '](url)', '链接文字'), title: '链接' },
 ]
 
 // Icon components map
@@ -272,8 +272,8 @@ function goBack() {
     <!-- Toolbar -->
     <div class="toolbar p-3 border-b border-dark-border flex justify-between items-center editor-toolbar">
       <div class="flex items-center gap-4">
-        <el-button text @click="goBack">← Back</el-button>
-        <el-input v-model="title" class="w-64" placeholder="Document title" />
+        <el-button text @click="goBack">← 返回</el-button>
+        <el-input v-model="title" class="w-64" placeholder="文档标题" />
       </div>
 
       <!-- Markdown Toolbar -->
@@ -308,7 +308,7 @@ function goBack() {
           v-model="content"
           type="textarea"
           class="editor-textarea flex-1"
-          placeholder="Start writing in markdown..."
+          placeholder="开始编写 Markdown..."
           :rows="30"
         />
       </div>

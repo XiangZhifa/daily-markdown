@@ -192,11 +192,11 @@ defineExpose({
 <template>
   <div class="statistics-chart relative">
     <div v-if="loading" class="absolute inset-0 flex items-center justify-center bg-base-100/50 z-10">
-      <span class="text-primary">Loading...</span>
+      <span class="text-primary">加载中...</span>
     </div>
 
     <div v-if="isEmpty" class="absolute inset-0 flex items-center justify-center">
-      <span class="text-gray-500">No data available</span>
+      <span class="text-gray-500">暂无数据</span>
     </div>
 
     <div ref="chartRef" class="w-full h-full" :class="{ 'opacity-0': isEmpty && !loading }"></div>

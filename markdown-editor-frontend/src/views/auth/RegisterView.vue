@@ -35,7 +35,7 @@ watch(() => form.value.email, (email) => {
   if (!email) {
     emailValidation.value = { valid: true, message: '' }
   } else if (!emailRegex.test(email)) {
-    emailValidation.value = { valid: false, message: 'Invalid email format' }
+    emailValidation.value = { valid: false, message: '邮箱格式无效' }
   } else {
     emailValidation.value = { valid: true, message: '' }
   }
@@ -51,7 +51,7 @@ watch(() => form.value.confirmPassword, (confirmPassword) => {
   if (!confirmPassword) {
     confirmPasswordValidation.value = { valid: true, message: '' }
   } else if (form.value.password !== confirmPassword) {
-    confirmPasswordValidation.value = { valid: false, message: 'Passwords do not match' }
+    confirmPasswordValidation.value = { valid: false, message: '两次输入的密码不一致' }
   } else {
     confirmPasswordValidation.value = { valid: true, message: '' }
   }
@@ -74,8 +74,8 @@ const isFormValid = computed(() => {
 
 // Strength label and color
 const strengthLabel = computed(() => {
-  const labels = ['Very Weak', 'Weak', 'Fair', 'Good', 'Strong']
-  return labels[passwordValidation.value.strength] || 'Very Weak'
+  const labels = ['非常弱', '弱', '中等', '良好', '强']
+  return labels[passwordValidation.value.strength] || '非常弱'
 })
 
 const strengthColor = computed(() => {
@@ -85,7 +85,7 @@ const strengthColor = computed(() => {
 
 async function handleRegister() {
   if (!isFormValid.value) {
-    ElMessage.warning('Please fill in all fields correctly')
+    ElMessage.warning('请正确填写所有字段')
     return
   }
 
@@ -96,14 +96,14 @@ async function handleRegister() {
       email: form.value.email,
       password: form.value.password
     })
-    ElMessage.success('Registration successful')
+    ElMessage.success('注册成功')
     router.push('/auth/login')
   } catch (error: any) {
     const message = error?.response?.data?.message || error?.message || ''
     if (message.includes('用户名已被注册') || message.includes('username')) {
       ElMessage.error('用户名已被注册')
     } else {
-      ElMessage.error('Registration failed')
+      ElMessage.error('注册失败')
     }
   } finally {
     loading.value = false
@@ -114,14 +114,14 @@ async function handleRegister() {
 <template>
   <div class="register-wrapper">
     <div class="register-card">
-      <h1 class="text-2xl font-bold mb-6 text-center">Markdown Editor</h1>
-      <h2 class="text-xl mb-6 text-center">Register</h2>
+      <h1 class="text-2xl font-bold mb-6 text-center">Markdown 编辑器</h1>
+      <h2 class="text-xl mb-6 text-center">注册</h2>
 
       <el-form :model="form" @submit.prevent="handleRegister">
         <el-form-item :validate-status="form.username && !usernameValidation.valid ? 'error' : ''">
           <el-input
             v-model="form.username"
-            placeholder="Username (3-20 chars, a-z0-9_)"
+            placeholder="用户名 (3-20个字符，a-z0-9_)"
             size="large"
           />
         </el-form-item>
@@ -133,7 +133,7 @@ async function handleRegister() {
           <el-input
             v-model="form.email"
             type="email"
-            placeholder="Email"
+            placeholder="邮箱"
             size="large"
           />
         </el-form-item>
@@ -145,7 +145,7 @@ async function handleRegister() {
           <el-input
             v-model="form.password"
             type="password"
-            placeholder="Password (min 8 chars)"
+            placeholder="密码 (至少8个字符)"
             size="large"
           />
         </el-form-item>
@@ -170,7 +170,7 @@ async function handleRegister() {
           <el-input
             v-model="form.confirmPassword"
             type="password"
-            placeholder="Confirm Password"
+            placeholder="确认密码"
             size="large"
           />
         </el-form-item>
@@ -187,14 +187,14 @@ async function handleRegister() {
             :disabled="!isFormValid"
             @click="handleRegister"
           >
-            Register
+             注册
           </el-button>
         </el-form-item>
       </el-form>
 
       <div class="mt-4 text-center">
         <router-link to="/auth/login" class="text-primary hover:underline">
-          Already have an account? Login
+          已有账号？立即登录
         </router-link>
       </div>
     </div>

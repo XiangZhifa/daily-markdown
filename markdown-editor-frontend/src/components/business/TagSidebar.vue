@@ -32,7 +32,7 @@ function clearTagFilter() {
   <div class="tag-sidebar">
     <!-- Header -->
     <div class="tag-header" @click="toggleCollapse">
-      <span class="tag-title">Tags</span>
+      <span class="tag-title">标签</span>
       <el-icon class="collapse-icon" :class="{ rotated: isCollapsed }">
         <ArrowRight />
       </el-icon>
@@ -42,10 +42,10 @@ function clearTagFilter() {
     <div v-show="!isCollapsed" class="tag-list">
       <!-- No tags state -->
       <div v-if="!hasTags" class="empty-state">
-        <span class="empty-text">No tags yet</span>
+        <span class="empty-text">暂无标签</span>
         <router-link to="/tags" class="add-link">
           <el-icon><Plus /></el-icon>
-          Add Tag
+          添加标签
         </router-link>
       </div>
 
@@ -56,7 +56,7 @@ function clearTagFilter() {
         @click="clearTagFilter"
       >
         <el-icon class="tag-icon"><Document /></el-icon>
-        <span class="tag-name">All Documents</span>
+        <span class="tag-name">全部文档</span>
       </div>
 
       <!-- Tag items -->

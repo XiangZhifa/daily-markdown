@@ -41,7 +41,7 @@ function startRename(tag: Tag) {
 async function saveRename(tag: Tag) {
   const newName = editingName.value.trim()
   if (!newName) {
-    ElMessage.warning('Tag name cannot be empty')
+    ElMessage.warning('标签名称不能为空')
     return
   }
   if (newName === tag.name) {
@@ -50,9 +50,9 @@ async function saveRename(tag: Tag) {
   }
   try {
     await tagsStore.renameTag(tag.id, newName)
-    ElMessage.success(`Tag renamed to "${newName}"`)
+    ElMessage.success(`标签已重命名为 "${newName}"`)
   } catch {
-    ElMessage.error(`Failed to rename tag: tag "${newName}" may already exist`)
+    ElMessage.error(`重命名标签失败: 标签 "${newName}" 可能已存在`)
   } finally {
     cancelRename()
   }
@@ -84,10 +84,10 @@ async function executeDelete() {
   deleteConfirmLoading.value = true
   try {
     await tagsStore.deleteTag(deletingTag.value.id)
-    ElMessage.success(`Tag "${deletingTag.value.name}" deleted`)
+    ElMessage.success(`标签 "${deletingTag.value.name}" 已删除`)
     deletingTag.value = null
   } catch {
-    ElMessage.error('Failed to delete tag')
+    ElMessage.error('删除标签失败')
   } finally {
     deleteConfirmLoading.value = false
   }
@@ -98,10 +98,10 @@ async function executeDelete() {
   <div class="tag-manage p-6">
     <!-- Header -->
     <div class="flex justify-between items-center mb-6">
-      <h1 class="text-2xl font-bold">Manage Tags</h1>
+      <h1 class="text-2xl font-bold">管理标签</h1>
       <el-button @click="tagsStore.fetchTags">
         <el-icon class="mr-1"><Refresh /></el-icon>
-        Refresh
+        刷新
       </el-button>
     </div>
 
@@ -112,7 +112,7 @@ async function executeDelete() {
 
     <!-- Empty State -->
     <div v-else-if="tagsStore.tags.length === 0" class="text-center py-8">
-      <p class="text-gray-400 mb-4">No tags yet</p>
+      <p class="text-gray-400 mb-4">暂无标签</p>
     </div>
 
     <!-- Tag List -->
@@ -132,8 +132,8 @@ async function executeDelete() {
               class="w-48"
               @keydown="handleRenameKeydown($event, tag)"
             />
-            <el-button type="primary" size="small" @click="saveRename(tag)">Save</el-button>
-            <el-button size="small" @click="cancelRename">Cancel</el-button>
+            <el-button type="primary" size="small" @click="saveRename(tag)">保存</el-button>
+            <el-button size="small" @click="cancelRename">取消</el-button>
           </template>
           <template v-else>
             <span
@@ -154,7 +154,7 @@ async function executeDelete() {
             text
             @click="startRename(tag)"
           >
-            Rename
+            重命名
           </el-button>
           <el-button
             v-if="editingTagId !== tag.id"
@@ -163,7 +163,7 @@ async function executeDelete() {
             text
             @click="confirmDelete(tag)"
           >
-            Delete
+            删除
           </el-button>
         </div>
       </div>
@@ -172,9 +172,9 @@ async function executeDelete() {
     <!-- Delete Confirmation Dialog -->
     <ConfirmDialog
       :model-value="showDeleteDialog"
-      title="Confirm Delete"
-      :message="deletingTag ? `Delete tag '${deletingTag.name}'? This tag will be removed from all associated documents.` : ''"
-      confirm-text="Delete"
+      title="确认删除"
+      :message="deletingTag ? `确定删除标签 '${deletingTag.name}' 吗？该标签将从所有相关文档中移除。` : ''"
+      confirm-text="删除"
       :loading="deleteConfirmLoading"
       @confirm="executeDelete"
       @cancel="cancelDelete"

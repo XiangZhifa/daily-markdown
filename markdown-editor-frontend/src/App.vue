@@ -5,7 +5,7 @@ import { ElMessage } from 'element-plus'
 // Error boundary to catch component errors
 onErrorCaptured((err, _instance, info) => {
   console.error('Component error:', err, info)
-  ElMessage.error('An error occurred. Please try again.')
+  ElMessage.error('发生错误，请重试。')
   return false
 })
 </script>

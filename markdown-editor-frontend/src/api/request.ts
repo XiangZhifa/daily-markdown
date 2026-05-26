@@ -49,15 +49,15 @@ request.interceptors.response.use(
       const status = error.response.status
       if (status === 401) {
         localStorage.removeItem('token')
-        ElMessage.error('Session expired, please login again')
+        ElMessage.error('会话已过期，请重新登录')
         router.push('/auth/login')
       } else if (status === 403) {
-        ElMessage.error('Access denied')
+        ElMessage.error('访问被拒绝')
       } else if (status === 500) {
-        ElMessage.error('Server error')
+        ElMessage.error('服务器错误')
       }
     } else {
-      ElMessage.error('Network error')
+      ElMessage.error('网络错误')
     }
     return Promise.reject(error)
   }

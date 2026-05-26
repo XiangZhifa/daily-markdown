@@ -110,7 +110,7 @@ function getTagName(tagId: number): string {
         @focus="handleFocus"
         @blur="handleBlur"
         @keydown="handleKeydown"
-        placeholder="Search or create tag..."
+        placeholder="搜索或创建标签..."
         :disabled="modelValue.length >= 20"
         clearable
         class="w-full"
@@ -141,15 +141,15 @@ function getTagName(tagId: number): string {
           class="px-3 py-2 cursor-pointer hover:bg-base-200 transition-colors border-t border-dark-border text-primary"
           @click="handleCreateTag"
         >
-          <span v-if="createLoading">Creating...</span>
-          <span v-else>Create "{{ inputValue }}"</span>
+          <span v-if="createLoading">创建中...</span>
+          <span v-else>创建 "{{ inputValue }}"</span>
         </div>
       </div>
     </div>
 
     <!-- Max tags hint -->
     <div v-if="modelValue.length >= 20" class="text-xs text-gray-500 mt-1">
-      Maximum 20 tags reached
+      最多只能添加 20 个标签
     </div>
   </div>
 </template>

@@ -24,10 +24,10 @@ const formattedDate = computed(() => {
   const diffHours = Math.floor(diffMs / 3600000)
   const diffDays = Math.floor(diffMs / 86400000)
 
-  if (diffMins < 1) return 'just now'
-  if (diffMins < 60) return `${diffMins} minute${diffMins > 1 ? 's' : ''} ago`
-  if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`
-  if (diffDays < 30) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`
+  if (diffMins < 1) return '刚刚'
+  if (diffMins < 60) return `${diffMins} 分钟前`
+  if (diffHours < 24) return `${diffHours} 小时前`
+  if (diffDays < 30) return `${diffDays} 天前`
 
   return date.toLocaleDateString()
 })
@@ -62,7 +62,7 @@ const handleClick = () => {
           :name="tag.name"
         />
         <el-tag v-if="remainingCount > 0" size="small" effect="plain" type="info">
-          +{{ remainingCount }} more
+          +{{ remainingCount }} 更多
         </el-tag>
       </div>
 

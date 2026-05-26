@@ -87,7 +87,7 @@ function handleLogout() {
             {{ authStore.user?.username?.[0]?.toUpperCase() || 'U' }}
           </el-avatar>
           <div class="user-details overflow-hidden">
-            <div class="font-semibold truncate">{{ authStore.user?.username || 'User' }}</div>
+            <div class="font-semibold truncate">{{ authStore.user?.username || '用户' }}</div>
             <div class="text-sm text-gray-400 truncate">{{ authStore.user?.email || '' }}</div>
           </div>
         </div>
@@ -108,7 +108,7 @@ function handleLogout() {
           class="nav-item flex items-center gap-2 px-4 py-2 rounded hover:bg-dark-card transition-colors"
         >
           <el-icon><DataAnalysis /></el-icon>
-          <span>Statistics</span>
+          <span>统计数据</span>
         </router-link>
         <button
           v-if="!sidebarCollapsed"
@@ -116,7 +116,7 @@ function handleLogout() {
           @click="handleLogout"
         >
           <el-icon><SwitchButton /></el-icon>
-          <span>Logout</span>
+          <span>退出登录</span>
         </button>
         <el-button
           v-if="!sidebarCollapsed"
@@ -124,7 +124,7 @@ function handleLogout() {
           class="w-full"
           @click="$router.push('/profile')"
         >
-          Settings
+          设置
         </el-button>
       </div>
 

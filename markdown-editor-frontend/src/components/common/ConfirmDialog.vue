@@ -9,8 +9,8 @@ interface Props {
 }
 
 withDefaults(defineProps<Props>(), {
-  confirmText: 'Confirm',
-  cancelText: 'Cancel',
+  confirmText: '确认',
+  cancelText: '取消',
   modelValue: false,
   loading: false
 })

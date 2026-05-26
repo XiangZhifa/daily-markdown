@@ -122,7 +122,7 @@ onMounted(() => {
 <template>
   <div class="statistics-view p-6">
     <div class="flex items-center justify-between mb-6">
-      <h1 class="text-2xl font-bold">Statistics</h1>
+      <h1 class="text-2xl font-bold">统计数据</h1>
       
       <!-- Month/Year Navigation -->
       <div class="flex items-center gap-4">
@@ -175,7 +175,7 @@ onMounted(() => {
       <!-- Monthly Bar Chart -->
       <div class="chart-card">
         <div class="chart-card-body">
-          <h2 class="chart-title mb-2">Monthly Documents</h2>
+          <h2 class="chart-title mb-2">月度文档</h2>
           <p class="chart-subtitle mb-4">{{ currentYear }}年文章统计</p>
           <div class="h-80">
             <StatisticsChart
@@ -191,7 +191,7 @@ onMounted(() => {
       <!-- Tag Distribution Pie Chart -->
       <div class="chart-card">
         <div class="chart-card-body">
-          <h2 class="chart-title mb-2">Tags Distribution</h2>
+          <h2 class="chart-title mb-2">标签分布</h2>
           <p class="chart-subtitle mb-4">{{ displayMonth }}标签统计</p>
           <div class="h-80">
             <StatisticsChart
@@ -210,7 +210,7 @@ onMounted(() => {
       v-if="isEmpty"
       title="本月暂无文章"
       message="开始创作以查看统计数据"
-      action-text="Create Document"
+      action-text="创建文档"
       :action-icon="Folder"
       @action="$router.push('/documents/new')"
     />

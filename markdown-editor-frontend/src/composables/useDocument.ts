@@ -22,7 +22,7 @@ export function useDocument() {
   }
 
   async function create(title?: string): Promise<Document> {
-    const data: DocumentCreate = { title: title || 'Untitled', content: '' }
+    const data: DocumentCreate = { title: title || '无标题', content: '' }
     const doc = await store.createDoc(data)
     currentDoc.value = doc
     return doc

@@ -1,29 +1,29 @@
 export const validator = {
   username(username: string): { valid: boolean; message: string } {
     if (!username) {
-      return { valid: false, message: 'Username is required' }
+      return { valid: false, message: '用户名不能为空' }
     }
     if (username.length < 3) {
-      return { valid: false, message: 'Username must be at least 3 characters' }
+      return { valid: false, message: '用户名至少3个字符' }
     }
     if (username.length > 20) {
-      return { valid: false, message: 'Username must be at most 20 characters' }
+      return { valid: false, message: '用户名最多20个字符' }
     }
     if (!/^[a-zA-Z0-9_]+$/.test(username)) {
-      return { valid: false, message: 'Username can only contain letters, numbers, and underscores' }
+      return { valid: false, message: '用户名只能包含字母、数字和下划线' }
     }
     return { valid: true, message: '' }
   },
 
   password(password: string): { valid: boolean; message: string; strength: number } {
     if (!password) {
-      return { valid: false, message: 'Password is required', strength: 0 }
+      return { valid: false, message: '密码不能为空', strength: 0 }
     }
     if (password.length < 8) {
-      return { valid: false, message: 'Password must be at least 8 characters', strength: 0 }
+      return { valid: false, message: '密码至少8个字符', strength: 0 }
     }
     if (password.length > 128) {
-      return { valid: false, message: 'Password must be at most 128 characters', strength: 0 }
+      return { valid: false, message: '密码最多128个字符', strength: 0 }
     }
 
     let strength = 0
@@ -37,14 +37,14 @@ export const validator = {
     strength = Math.min(4, strength)
 
     if (strength < 2) {
-      return { valid: true, message: 'Password is weak', strength }
+      return { valid: true, message: '密码强度：弱', strength }
     }
     if (strength < 3) {
-      return { valid: true, message: 'Password is fair', strength }
+      return { valid: true, message: '密码强度：中等', strength }
     }
     if (strength < 4) {
-      return { valid: true, message: 'Password is good', strength }
+      return { valid: true, message: '密码强度：良好', strength }
     }
-    return { valid: true, message: 'Password is strong', strength }
+    return { valid: true, message: '密码强度：强', strength }
   },
 }
