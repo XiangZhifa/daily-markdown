@@ -825,7 +825,9 @@ npm run build
 
 # 构建产物位于 dist/ 目录
 # 启动生产服务
-NODE_ENV=production npm run start:prod
+NODE_ENV=production 
+
+npm run start:prod
 ```
 
 ## 常见问题
