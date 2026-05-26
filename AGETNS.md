@@ -41,30 +41,103 @@
 - 调用 fronted-design Skill 进行 UI 设计
 - 必须确保移动端适配
 
+## Behavioral Guidelines
+Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-specific instructions as needed.
+
+**Tradeoff:** These guidelines bias toward caution over speed. For trivial tasks, use judgment.
+
+### 1. Think Before Coding
+
+**Don't assume. Don't hide confusion. Surface tradeoffs.**
+
+Before implementing:
+- State your assumptions explicitly. If uncertain, ask.
+- If multiple interpretations exist, present them - don't pick silently.
+- If a simpler approach exists, say so. Push back when warranted.
+- If something is unclear, stop. Name what's confusing. Ask.
+
+### 2. Simplicity First
+
+**Minimum code that solves the problem. Nothing speculative.**
+
+- No features beyond what was asked.
+- No abstractions for single-use code.
+- No "flexibility" or "configurability" that wasn't requested.
+- No error handling for impossible scenarios.
+- If you write 200 lines and it could be 50, rewrite it.
+
+Ask yourself: "Would a senior engineer say this is overcomplicated?" If yes, simplify.
+
+### 3. Surgical Changes
+
+**Touch only what you must. Clean up only your own mess.**
+
+When editing existing code:
+- Don't "improve" adjacent code, comments, or formatting.
+- Don't refactor things that aren't broken.
+- Match existing style, even if you'd do it differently.
+- If you notice unrelated dead code, mention it - don't delete it.
+
+When your changes create orphans:
+- Remove imports/variables/functions that YOUR changes made unused.
+- Don't remove pre-existing dead code unless asked.
+
+The test: Every changed line should trace directly to the user's request.
+
+### 4. Goal-Driven Execution
+
+**Define success criteria. Loop until verified.**
+
+Transform tasks into verifiable goals:
+- "Add validation" → "Write tests for invalid inputs, then make them pass"
+- "Fix the bug" → "Write a test that reproduces it, then make it pass"
+- "Refactor X" → "Ensure tests pass before and after"
+
+For multi-step tasks, state a brief plan:
+```
+1. [Step] → verify: [check]
+2. [Step] → verify: [check]
+3. [Step] → verify: [check]
+```
+
+Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
+
+---
+
+**These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
+
 ## CodeGraph
 
-CodeGraph 为代码库构建语义知识图谱，实现更快、更智能的代码探索。
+CodeGraph builds a semantic knowledge graph of codebases for faster, smarter code exploration.
 
-### 如果项目中存在 `.codegraph/`
+### If `.codegraph/` exists in the project
 
-**直接使用 CodeGraph 回答 — 不要将探索委托给文件读取子代理或 grep/read 循环。** CodeGraph *就是* 预构建的搜索索引；用 grep + Read 重新推导其答案会重复它已完成的工作，对于相同结果花费更多，每次工具调用消耗更多。CodeGraph *就是* 预构建的搜索索引；用 grep + Read 重新推导其答案会重复它已完成的工作，对于相同结果花费更多。对于类似"X 如何工作？"、"X 如何实现？"、架构、追踪或"X 在哪里"的问题，调用 CodeGraph 来回答 —— 通常 **零文件读取**。返回的源代码是完整且可信的：将其视为已读取，不要重新打开这些文件。仅在确认 CodeGraph 未覆盖的特定细节时才使用原始 Read/Grep。
+**Answer directly with CodeGraph — don't delegate exploration to a file-reading sub-agent or a grep/read loop.** CodeGraph *is* the pre-built search index; re-deriving its answers with grep + Read repeats work it already did and costs more for the same result. For "how does X work?", architecture, trace, or where-is-X questions, answer in a handful of CodeGraph calls and stop — typically with **zero file reads**. The returned source is complete and authoritative: treat it as already read and do not re-open those files. Reach for raw Read/Grep only to confirm a specific detail CodeGraph didn't cover.
 
-**按意图选择工具：**
+**Tool selection by intent:**
 
-| 工具 | 用途 |
-|------|------|
-| `codegraph_context` | 首先映射任务/功能/区域 — 一次调用组合搜索 + 节点 + 调用者 + 被调用者 |
-| `codegraph_trace` | "X 如何到达 Y" — 调用路径，每个跃点的 body 内联（遵循 grep 无法处理的动态分派跃点） |
-| `codegraph_explore` | 在一次预算受限调用中调查多个相关符号的源代码 |
-| `codegraph_search` | 按名称查找符号 |
-| `codegraph_callers` / `codegraph_callees` | 一次一个跃点地遍历调用流 |
-| `codegraph_impact` | 编辑前检查受影响范围 |
-| `codegraph_node` | 获取单个符号的源代码/签名 |
+| Tool | Use For |
 
-直接的 CodeGraph 回答只需几次调用；grep/read 探索则需要数十次。
+|------|---------|
 
-### 如果 `.codegraph/` 不存在
+| `codegraph_context` | Map a task / feature / area first — composes search + node + callers + callees in one call |
 
-在会话开始时，询问用户是否要初始化 CodeGraph：
+| `codegraph_trace` | "How does X reach Y" — the call path, each hop's body inline (follows dynamic-dispatch hops grep can't) |
 
-"我注意到此项目未初始化 CodeGraph。你希望我运行 `codegraph init -i` 来构建代码知识图谱吗？"
+| `codegraph_explore` | Survey several related symbols' source in ONE budget-capped call |
+
+| `codegraph_search` | Find a symbol by name |
+
+| `codegraph_callers` / `codegraph_callees` | Walk call flow one hop at a time |
+
+| `codegraph_impact` | Check what's affected before editing |
+
+| `codegraph_node` | Get a single symbol's source / signature |
+
+A direct CodeGraph answer is a handful of calls; a grep/read exploration is dozens.
+
+### If `.codegraph/` does NOT exist
+
+At the start of a session, ask the user if they'd like to initialize CodeGraph:
+
+"I notice this project doesn't have CodeGraph initialized. Would you like me to run `codegraph init -i` to build a code knowledge graph?"
