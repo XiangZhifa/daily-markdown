@@ -93,7 +93,7 @@ function handleKeydown(event: KeyboardEvent) {
 <template>
   <div class="login-wrapper">
     <div class="login-card">
-      <h1 class="text-2xl font-bold mb-2 text-center text-white">Markdown Editor</h1>
+      <h1 class="text-2xl font-bold mb-2 text-center text-white">墨记</h1>
       <h2 class="text-xl mb-6 text-center text-gray-400">登录</h2>
 
       <el-form :model="form" @submit.prevent="handleLogin">
